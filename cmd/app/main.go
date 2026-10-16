@@ -9,31 +9,33 @@ import (
 func main() {
 	args := os.Args[1:]
 
-	if len(args) < 2 {
+	if len(args) < 1 {
+		fmt.Println("action and arguments param required.")
+		fmt.Println("example: task-cli add 1")
 		os.Exit(1)
 	}
 
-	actionName := args[1]
+	actionName := args[0]
 
 	switch actionName {
 	case "add":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("add command requires a task name..")
 			return
 		}
 		// add
 	case "update":
-		if len(args) < 4 {
+		if len(args) < 3 {
 			fmt.Println("update command requires an index and a task name..")
 			return
 		}
 
-		actionParams := args[2:4]
-		validateID(actionParams[2])
+		taskID := args[2]
+		validateID(taskID)
 
 		// update
 	case "delete":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("delete command requires an index..")
 			return
 		}
@@ -43,7 +45,7 @@ func main() {
 
 		// delete
 	case "mark-in-progress":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("mark-in-progress command requires an index..")
 			return
 		}
@@ -53,7 +55,7 @@ func main() {
 
 		// mark-in-progress
 	case "mark-done":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("mark-done command requires an index..")
 		}
 
@@ -62,7 +64,7 @@ func main() {
 
 		//mark-done
 	case "list":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			//list all tasks
 		}
 
