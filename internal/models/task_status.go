@@ -1,7 +1,5 @@
 package models
 
-import "fmt"
-
 type TaskStatus string
 
 const (

@@ -1,1 +1,1 @@
-module tasktracker
+module task-cli

@@ -4,74 +4,42 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"task-cli/internal/handlers"
 )
 
-func main() {
-	args := os.Args[1:]
+type actionHandler func(args []string) error
 
-	if len(args) < 1 {
+func main() {
+	commandLineArgs := os.Args
+
+	if len(commandLineArgs) < 2 {
 		fmt.Println("action and arguments param required.")
 		fmt.Println("example: task-cli add 1")
 		os.Exit(1)
 	}
 
-	actionName := args[0]
+	availableActions := map[string]actionHandler{
+		"add":              handlers.AddHandler,
+		"update":           handlers.UpdateHandler,
+		"delete":           handlers.DeleteHandler,
+		"mark-in-progress": handlers.MarkInProgressHandler,
+		"mark-done":        handlers.MarkDoneHandler,
+		"list":             handlers.ListHandler,
+	}
 
-	switch actionName {
-	case "add":
-		if len(args) < 2 {
-			fmt.Println("add command requires a task name..")
-			return
-		}
-		// add
-	case "update":
-		if len(args) < 3 {
-			fmt.Println("update command requires an index and a task name..")
-			return
-		}
+	actionName := commandLineArgs[1]
 
-		taskID := args[2]
-		validateID(taskID)
+	actionArgs := commandLineArgs[2:]
 
-		// update
-	case "delete":
-		if len(args) < 2 {
-			fmt.Println("delete command requires an index..")
-			return
-		}
+	handler, exists := availableActions[actionName]
+	if !exists {
+		fmt.Printf("unsupported action: %v\n", actionName)
+		os.Exit(1)
+	}
 
-		taskID := args[2]
-		validateID(taskID)
-
-		// delete
-	case "mark-in-progress":
-		if len(args) < 2 {
-			fmt.Println("mark-in-progress command requires an index..")
-			return
-		}
-
-		taskID := args[2]
-		validateID(taskID)
-
-		// mark-in-progress
-	case "mark-done":
-		if len(args) < 2 {
-			fmt.Println("mark-done command requires an index..")
-		}
-
-		taskID := args[2]
-		validateID(taskID)
-
-		//mark-done
-	case "list":
-		if len(args) < 2 {
-			//list all tasks
-		}
-
-		taskID := args[2]
-		validateID(taskID)
-
-		// list (done, todo, in-progress)
+	if err := handler(actionArgs); err != nil {
+		fmt.Printf("error: %v\n\n", err)
+		os.Exit(1)
 	}
 }
 
