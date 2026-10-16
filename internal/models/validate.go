@@ -1,0 +1,10 @@
+package models
+
+import "fmt"
+
+func (t TaskStorage) Validate() error {
+	if !t.Status.IsValid() {
+		return fmt.Errorf("invalid task status: %s", t.Status)
+	}
+	return nil
+}
